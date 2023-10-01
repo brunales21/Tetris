@@ -120,7 +120,7 @@ public class Tablero extends JPanel implements KeyListener {
     }
 
     public void init() {
-        dimension = new Vector2(50, 25);
+        dimension = new Vector2(30, 15);
         super.setSize(new Dimension(dimension.getX(), dimension.getY()));
         GridLayout gridLayout = new GridLayout(super.getWidth(), super.getHeight());
         setLayout(gridLayout);
