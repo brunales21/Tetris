@@ -131,7 +131,6 @@ public class Tablero extends JPanel implements KeyListener {
         tetrominos = FabricaTetrominos.getTetrominos(this);
 
         setNextTetromino();
-
         initTimer();
 
     }
