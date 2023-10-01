@@ -25,39 +25,59 @@ public class Tablero extends JPanel implements KeyListener {
 
     private void initTimer() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 0, 150);
+        timer.scheduleAtFixedRate(timerTask, 500, 50);
     }
 
-    private void romperFila() {
-        int row = getFilledRow();
-        if (row != -1) {
-            System.out.println("fila full = "+row);
-            casillas.stream()
-                    .filter(c -> c.getPosition().getX() == row)
-                    .forEach(c -> {
-                        System.out.println("entra");
-                                c.setOcupado(false);
-                                c.setBackground(Casilla.DEFAULT_BACKGROUND);
-                            }
-                    );
+    private void checkRomperFilas() {
+        int rowOcupada = getRowOcupada();
+        int cantidadRowsOcupadas = getCantRowsOcupadas().size();
+        System.out.println(cantidadRowsOcupadas);
+        for (int i = 0; i < cantidadRowsOcupadas; i++) {
+            List<Casilla> row = getCasillasFromRow(rowOcupada);
+            row.forEach(c -> {
+                c.setOcupado(false);
+                c.setBackground(Casilla.DEFAULT_BACKGROUND);
+            });
+            efectoGravedad(rowOcupada);
+            repaint();
+
         }
-        
     }
-    
-    private void efectoGravedad() {
 
+    private void caeFila(int row) {
+        List<Casilla> casillas = getCasillasFromRow(row);
+        List<Casilla> casillasArriba = getCasillasFromRow(row-1);
+        for (int i = 0; i < casillas.size(); i++) {
+            casillas.get(i).setOcupado(casillasArriba.get(i).isOcupado());
+            casillas.get(i).setBackground(casillasArriba.get(i).getBackground());
+
+        }
     }
-    private int getFilledRow() {
-        int contador;
+    private void efectoGravedad(int row) {
+        for (int i = row; i > 0; i--) {
+            caeFila(i);
+        }
+    }
+
+    private List<Casilla> getCasillasFromRow(int row) {
+        return casillas.stream().filter(c -> c.getPosition().getX() == row).toList();
+    }
+
+    private List<Integer> getCantRowsOcupadas() {
+        List<Integer> filasOcupadas = new ArrayList<>();
         for (int i = dimension.getX()-1; i >= 0; i--) {
-            contador = 0;
-            for (int j = dimension.getY()-1; j >= 0; j--) {
-                if (getCasillaByPos(new Vector2(i, j)).isOcupado()) {
-                    contador++;
-                }
+            List<Casilla> actualRow = getCasillasFromRow(i);
+            if (actualRow.stream().allMatch(Casilla::isOcupado)) {
+                filasOcupadas.add(i);
             }
-            if (contador == dimension.getY()) {
-                System.out.println("fila "+i);
+        }
+        return filasOcupadas;
+    }
+
+    private int getRowOcupada() {
+        for (int i = dimension.getX()-1; i >= 0; i--) {
+            List<Casilla> actualRow = getCasillasFromRow(i);
+            if (actualRow.stream().allMatch(Casilla::isOcupado)) {
                 return i;
             }
         }
@@ -90,18 +110,17 @@ public class Tablero extends JPanel implements KeyListener {
 
     private Random rand = new Random();
     private void setNextTetromino() {
-        tetrominoActual = tetrominos.get(rand.nextInt(7));
-        tetrominoActual.setPosition(new Vector2(4, rand.nextInt(4, dimension.getY()-4)));
+        tetrominoActual = tetrominos.get(rand.nextInt(tetrominos.size()));
+        tetrominoActual.setPosition(new Vector2(3, rand.nextInt(4, dimension.getY()-4)));
     }
 
     public void tetrominoTermino() {
-        romperFila();
-        efectoGravedad();
+        checkRomperFilas();
         setNextTetromino();
     }
 
     public void init() {
-        dimension = new Vector2(30, 10);
+        dimension = new Vector2(50, 25);
         super.setSize(new Dimension(dimension.getX(), dimension.getY()));
         GridLayout gridLayout = new GridLayout(super.getWidth(), super.getHeight());
         setLayout(gridLayout);
@@ -110,6 +129,7 @@ public class Tablero extends JPanel implements KeyListener {
         meterCasillas();
 
         tetrominos = FabricaTetrominos.getTetrominos(this);
+
         setNextTetromino();
 
         initTimer();
@@ -127,6 +147,11 @@ public class Tablero extends JPanel implements KeyListener {
     private void addCasilla(Casilla c) {
         casillas.add(c);
         add(c);
+    }
+
+    private void removeCasilla(Casilla c) {
+        casillas.remove(c);
+        remove(c);
     }
 
     public Tetromino getTetrominoActual() {
