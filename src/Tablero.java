@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.stream.Collectors;
 
 public class Tablero extends JPanel implements KeyListener {
     private Tetromino tetrominoActual;
@@ -25,7 +26,7 @@ public class Tablero extends JPanel implements KeyListener {
 
     private void initTimer() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 500, 50);
+        timer.scheduleAtFixedRate(timerTask, 500, 100);
     }
 
     private void checkRomperFilas() {
@@ -60,7 +61,7 @@ public class Tablero extends JPanel implements KeyListener {
     }
 
     private List<Casilla> getCasillasFromRow(int row) {
-        return casillas.stream().filter(c -> c.getPosition().getX() == row).toList();
+        return casillas.stream().filter(c -> c.getPosition().getX() == row).collect(Collectors.toList());
     }
 
     private List<Integer> getCantRowsOcupadas() {
@@ -120,7 +121,7 @@ public class Tablero extends JPanel implements KeyListener {
     }
 
     public void init() {
-        dimension = new Vector2(30, 15);
+        dimension = new Vector2(60, 30);
         super.setSize(new Dimension(dimension.getX(), dimension.getY()));
         GridLayout gridLayout = new GridLayout(super.getWidth(), super.getHeight());
         setLayout(gridLayout);
