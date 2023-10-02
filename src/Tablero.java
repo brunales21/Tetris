@@ -26,13 +26,12 @@ public class Tablero extends JPanel implements KeyListener {
 
     private void initTimer() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 500, 100);
+        timer.scheduleAtFixedRate(timerTask, 500, 75);
     }
 
     private void checkRomperFilas() {
         int rowOcupada = getRowOcupada();
         int cantidadRowsOcupadas = getCantRowsOcupadas().size();
-        System.out.println(cantidadRowsOcupadas);
         for (int i = 0; i < cantidadRowsOcupadas; i++) {
             List<Casilla> row = getCasillasFromRow(rowOcupada);
             row.forEach(c -> {
@@ -41,7 +40,6 @@ public class Tablero extends JPanel implements KeyListener {
             });
             efectoGravedad(rowOcupada);
             repaint();
-
         }
     }
 
@@ -121,7 +119,7 @@ public class Tablero extends JPanel implements KeyListener {
     }
 
     public void init() {
-        dimension = new Vector2(60, 30);
+        dimension = new Vector2(40, 20);
         super.setSize(new Dimension(dimension.getX(), dimension.getY()));
         GridLayout gridLayout = new GridLayout(super.getWidth(), super.getHeight());
         setLayout(gridLayout);
