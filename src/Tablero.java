@@ -26,7 +26,7 @@ public class Tablero extends JPanel implements KeyListener {
 
     private void initTimer() {
         timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 500, 75);
+        timer.scheduleAtFixedRate(timerTask, 500, 150);
     }
 
     private void checkRomperFilas() {
@@ -92,9 +92,10 @@ public class Tablero extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             tetrominoActual.rotate();
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            toLowestPos();
         } else {
             tetrominoActual.move(map.get(e.getKeyCode()));
-
         }
     }
 
@@ -102,6 +103,13 @@ public class Tablero extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
+
+    private void toLowestPos() {
+        while (tetrominoActual.canMoveTowards(Vector2.DOWN)) {
+            tetrominoActual.move(Vector2.DOWN);
+        }
+    }
+
 
     public Casilla getCasillaByPos(Vector2 position) {
         return casillas.stream().filter(c -> c.getPosition().equals(position)).findFirst().get();
@@ -119,7 +127,7 @@ public class Tablero extends JPanel implements KeyListener {
     }
 
     public void init() {
-        dimension = new Vector2(40, 20);
+        dimension = new Vector2(34, 17);
         super.setSize(new Dimension(dimension.getX(), dimension.getY()));
         GridLayout gridLayout = new GridLayout(super.getWidth(), super.getHeight());
         setLayout(gridLayout);

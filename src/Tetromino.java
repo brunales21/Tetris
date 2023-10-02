@@ -17,7 +17,7 @@ public class Tetromino {
     public void move(Vector2 direction) {
         if (canMoveTowards(direction)) {
             show(false);
-            setPosition(position.sum(direction));
+            setPosition(nextPosition(direction));
             show(true);
         } else if (direction == Vector2.DOWN) {
             partes.forEach(p -> tablero.getCasillaByPos(position.sum(p.getPosition())).setOcupado(true));

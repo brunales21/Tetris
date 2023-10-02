@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class Ventana extends JFrame {
     private Tablero tablero;
-    private final Dimension dimension = new Dimension(400, 800);
+    private final Dimension dimension = new Dimension(250, 500);
 
     public Ventana() {
         init();
